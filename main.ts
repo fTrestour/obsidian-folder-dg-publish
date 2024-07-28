@@ -1,29 +1,30 @@
-import { Notice, Plugin } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 
-interface MySettings {
+interface FolderDgPublishSettings {
 	folder: string;
 	frontMatterDefaults: Record<string, any>;
 }
 
-const DEFAULT_SETTINGS: MySettings = {
+const DEFAULT_SETTINGS: FolderDgPublishSettings = {
 	folder: "folder",
 	frontMatterDefaults: { "dg-publish": true },
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MySettings;
+export default class FolderDgPublish extends Plugin {
+	settings: FolderDgPublishSettings;
 
 	async onload() {
 		await this.loadSettings();
+
+		this.addSettingTab(
+			new FolderDgPublishSettingsSettingTab(this.app, this)
+		);
 
 		this.registerEvent(
 			this.app.vault.on("rename", (abstractFile) => {
 				const file = this.app.vault.getFileByPath(abstractFile.path);
 
 				if (file === null) {
-					new Notice(
-						`Could not find file with path ${abstractFile.path}`
-					);
 					return;
 				}
 
@@ -49,4 +50,28 @@ export default class MyPlugin extends Plugin {
 	}
 
 	onunload() {}
+}
+
+class FolderDgPublishSettingsSettingTab extends PluginSettingTab {
+	constructor(app: App, private plugin: FolderDgPublish) {
+		super(app, plugin);
+	}
+
+	display() {
+		this.containerEl.empty();
+
+		new Setting(this.containerEl)
+			.setName("The folder used for the automation")
+			.setDesc(
+				"All files moved to this folder will be processed. Files currently in this folder won't be processed."
+			)
+			.addText((text) => {
+				text.setPlaceholder("Folder")
+					.setValue(this.plugin.settings.folder)
+					.onChange(async (value) => {
+						this.plugin.settings.folder = value;
+						await this.plugin.saveData(this.plugin.settings);
+					});
+			});
+	}
 }

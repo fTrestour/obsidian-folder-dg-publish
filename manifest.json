@@ -1,11 +1,9 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "folder-dg-publish",
+	"name": "Folder dg-publish",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Sets the dg-publish property to true for all files that are moved into a specified folder.",
+	"author": "ftrestour",
 	"isDesktopOnly": false
 }
