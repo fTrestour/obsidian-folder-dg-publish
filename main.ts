@@ -22,8 +22,11 @@ export default class FolderDgPublish extends Plugin {
 
 		this.registerEvent(
 			this.app.vault.on("rename", (abstractFile) => {
-				const file = this.app.vault.getFileByPath(abstractFile.path);
+				if (!abstractFile.path.startsWith(this.settings.folder)) {
+					return;
+				}
 
+				const file = this.app.vault.getFileByPath(abstractFile.path);
 				if (file === null) {
 					return;
 				}
